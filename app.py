@@ -26,7 +26,7 @@ from sklearn.cluster import KMeans
 import numpy as np
 import pandas as pd
 from docx import Document
-from fpdf import FPDF
+from fpdf2 import FPDF
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
@@ -249,7 +249,7 @@ def make_pdf_summary(paper: ResearchPaper) -> bytes:
         pdf.set_font("Arial", size=11)
         for k in paper.key_findings:
             pdf.multi_cell(0, 6, "- " + k)
-    return pdf.output(dest='S').encode('latin-1')
+    return pdf.output()
 
 def make_csv_export(papers: List[ResearchPaper]) -> bytes:
     rows = []
