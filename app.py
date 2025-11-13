@@ -106,6 +106,12 @@ def hf_call_inference(model: str, inputs: str, params: Dict[str, Any] = None, ti
     if isinstance(data, dict) and "summary_text" in data:
         return data["summary_text"]
     # fallback to str
+        # Check if API returned an error message
+    if isinstance(data, dict) and "error" in data:
+        raise RuntimeError(f"HF API error: {data['error']}")
+    # Check if model is loading
+    if isinstance(data, dict) and "estimated_time" in data:
+        raise RuntimeError("Model is loading, please try again in a moment")
     return json.dumps(data)
 
 def hf_summarize(text: str, model: str, length: str = "medium") -> str:
@@ -289,6 +295,7 @@ def process_paper_bytes(file_bytes: bytes, filename: str, hf_summary_model: str,
         rp.key_findings = []
     # Methodology extraction heuristics
     method = ""
+            st.error(f"Summary generation failed: {str(e)}")
     for marker in ["methodology", "methods", "experimental setup", "materials and methods"]:
         lm = lower.find(marker)
         if lm != -1:
